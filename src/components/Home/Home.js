@@ -2,9 +2,14 @@ import React from 'react';
 import './Home.css';
 import {Button} from 'react-bootstrap';
 
-const Home = ({companies}) => {
+const Home = ({companies, deleteCompany, onRouteChange}) => {
 
-  
+  let caption = ['ID', 'NAME', 'LOCATION', 'INDUSTRY', 'CEO', 'EMPLOYEES', 'OPTIONS'];
+
+  let header = caption.map((key, index) => {
+    return <th key={index}>{key.toUpperCase()}</th>
+  })
+
   let tableData = companies.map((company, index) => {
     const {id, name, location, industry, ceo, employees} = company;
     return(
@@ -15,11 +20,10 @@ const Home = ({companies}) => {
         <td>{industry}</td>
         <td>{ceo}</td>
         <td>{employees}</td>
-        <div className='options'>
+        <td className='options'>
           <Button>Edit</Button>
-          <Button>Delete</Button>
-        </div>
-        
+          <Button onClick={() => deleteCompany(id)}>Delete</Button>
+        </td>
       </tr>
     )
   });
@@ -29,9 +33,11 @@ const Home = ({companies}) => {
       <h1 id='title'>Company List</h1>
       <table id='companies'>
         <tbody>
+          <tr>{header}</tr>
           {tableData}
         </tbody>
       </table>
+      <Button id='add' onClick={() => onRouteChange('create')}>Add Company</Button>
     </div>
   );
 }

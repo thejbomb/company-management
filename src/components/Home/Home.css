@@ -37,3 +37,7 @@
   align-items: center;
   justify-content: space-evenly;
 }
+
+#add {
+  display: flex;
+}
