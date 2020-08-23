@@ -10,12 +10,15 @@ import {
 class Edit extends Component {
   constructor(props) {
     super(props);
+    const {company} = this.props;
+    
     this.state = {
-      name: '',
-      location: '',
-      industry: '',
-      ceo: '',
-      employees: '',
+      id: company.id,
+      name: company.name,
+      location: company.location,
+      industry: company.industry,
+      ceo: company.ceo,
+      employees: company.employees,
       invalid: false,
     }
   }
@@ -40,13 +43,14 @@ class Edit extends Component {
     this.setState({employees: event.target.value});
   }
 
-  onCreate = () => {
-    const {name, location, industry, ceo, employees} = this.state;
-    const {addCompany, onRouteChange, id} = this.props;
+  onSave = () => {
+    const {id, name, location, industry, ceo, employees} = this.state;
+    const {changeCompany, onRouteChange} = this.props;
 
     if (name.length > 0 && location.length > 0 && industry.length > 0 && ceo.length > 0 && employees.length > 0) {
       let company = {id, name, location, industry, ceo, employees};
-      addCompany(company);
+
+      changeCompany(company);
       onRouteChange('home');
     } else {
       this.setState({invalid: true});
@@ -55,45 +59,45 @@ class Edit extends Component {
 
   render() {
     const {onRouteChange} = this.props;
-    const {invalid} = this.state;
+    const {name, location, industry, ceo, employees, invalid} = this.state;
 
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '5rem'}}> 
         <Card style={{ width : '40rem' }} >
-          <Card.Title> Add Company </Card.Title>
+          <Card.Title> Edit Company </Card.Title>
           <Form>
             <Form.Group as={Row} controlId="formName">
               <Form.Label column sm={2}>Name</Form.Label>
               <Col sm={8}>
-              <Form.Control type="name" placeholder="Name" onChange={this.onNameChange}/>
+              <Form.Control type="name" placeholder="Name" defaultValue={name} onChange={this.onNameChange}/>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formLocation">
               <Form.Label column sm={2}>Location</Form.Label>
               <Col sm={8}>
-              <Form.Control type="location" placeholder="Location" onChange={this.onLocationChange}/>
+              <Form.Control type="location" placeholder="Location" defaultValue={location} onChange={this.onLocationChange}/>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formIndustry">
               <Form.Label column sm={2}>Industry</Form.Label>
               <Col sm={8}>
-              <Form.Control type="industry" placeholder="Industry" onChange={this.onIndustryChange}/>
+              <Form.Control type="industry" placeholder="Industry" defaultValue={industry} onChange={this.onIndustryChange}/>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formCEO">
               <Form.Label column sm={2}>CEO</Form.Label>
               <Col sm={8}>
-              <Form.Control type="CEO" placeholder="CEO" onChange={this.onCEOChange}/>
+              <Form.Control type="CEO" placeholder="CEO" defaultValue={ceo} onChange={this.onCEOChange}/>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formEmployees">
               <Form.Label column sm={2}>Employees</Form.Label>
               <Col sm={8}>
-              <Form.Control type="employees" placeholder="Employees" onChange={this.onEmployeesChange}/>
+              <Form.Control type="employees" placeholder="Employees" defaultValue={employees} onChange={this.onEmployeesChange}/>
               </Col>
             </Form.Group>
 
@@ -102,7 +106,7 @@ class Edit extends Component {
               { invalid && <Form.Label column style={{color: 'red'}}>Invalid inputs</Form.Label> }
               <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly'}}>
                 <Button onClick={() => onRouteChange('home')}>Back</Button>
-                <Button onClick={this.onCreate}>Create</Button>
+                <Button onClick={this.onSave}>Save</Button>
               </div>
               
               </Col>

@@ -2,7 +2,7 @@ import React from 'react';
 import './Home.css';
 import {Button} from 'react-bootstrap';
 
-const Home = ({companies, deleteCompany, onRouteChange}) => {
+const Home = ({companies, deleteCompany, onRouteChange, editCompany}) => {
 
   let caption = ['ID', 'NAME', 'LOCATION', 'INDUSTRY', 'CEO', 'EMPLOYEES', 'OPTIONS'];
 
@@ -21,7 +21,7 @@ const Home = ({companies, deleteCompany, onRouteChange}) => {
         <td>{ceo}</td>
         <td>{employees}</td>
         <td className='options'>
-          <Button>Edit</Button>
+          <Button onClick={() => editCompany(company)}>Edit</Button>
           <Button onClick={() => deleteCompany(id)}>Delete</Button>
         </td>
       </tr>

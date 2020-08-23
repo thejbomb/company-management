@@ -13,6 +13,7 @@ const initialState = {
     { id: 3, name: 'Tesla', location: 'Palo Alto, California', industry: 'Automotive', ceo: 'Elon Musk', employees: '40,000'},
     { id: 4, name: 'Facebook', location: 'Menlo Park, California', industry: 'Social media', ceo: 'Mark Zuckerberg', employees: '50,000'},
   ],
+  company: {},
 }
 
 class App extends Component {
@@ -25,6 +26,24 @@ class App extends Component {
     this.setState({companies: [...this.state.companies, company]});
   }
 
+  editCompany = (company) => {
+    this.setState({company: company});
+    this.onRouteChange('edit');
+  }
+
+  changeCompany = (companyUpdate) => {
+    const {companies} = this.state;
+
+    let updatedList = companies.map((company) => {
+      if (company.id === companyUpdate.id) {
+        return companyUpdate;
+      } else {
+        return company;
+      }
+    })
+    this.setState({companies: updatedList});
+  }
+
   deleteCompany = (id) => {
     let newList = this.state.companies.filter(company => company.id !== id);
     this.setState({companies: newList});
@@ -35,21 +54,21 @@ class App extends Component {
   }
 
   render() {
-    const {companies, route} = this.state;
+    const {companies, route, company} = this.state;
 
     return (
       <div className="App">
-        <Navigation/>
+        <Navigation onRouteChange={this.onRouteChange}/>
         { (() => {
           switch (route) {
             case 'create': {
               return (<Create onRouteChange={this.onRouteChange} addCompany={this.addCompany} id={companies.length + 1}/>)
             }
             case 'edit': {
-              return (<Edit onRouteChange={this.onRouteChange}/>)
+              return (<Edit onRouteChange={this.onRouteChange} company={company} changeCompany={this.changeCompany}/>)
             }
             default: {
-              return (<Home companies={companies} deleteCompany={this.deleteCompany} onRouteChange={this.onRouteChange}/>)
+              return (<Home companies={companies} deleteCompany={this.deleteCompany} onRouteChange={this.onRouteChange} editCompany={this.editCompany}/>)
             }
           }
         })()}
