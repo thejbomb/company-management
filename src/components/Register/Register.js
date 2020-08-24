@@ -11,13 +11,8 @@ class Registration extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
       password: '',
       email: '',
-      selected: [],
-      decrease: false,
-      increase: false,
-      invalid: false,
     }
   }
 
@@ -46,7 +41,7 @@ class Registration extends React.Component {
   }
 
   /**
-   * Sends a resgister post request to the server to create a new document in the database
+   * Sends a resgister post request to the server to create a new company dataset in the database
    */
   onRegister = () => {
     const {email, password} = this.state;

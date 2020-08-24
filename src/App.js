@@ -58,7 +58,7 @@ class App extends Component {
   }
 
   /**
-   * Sends a post request to the server to add a new company to the database
+   * Creates the new company dataset
    * @param {Object} company An object of the new company 
    */
   addCompany = (company) => {
@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   /**
-   * Saves the changes to the company to the backend and what's displayed
+   * Updates the company data
    * @param {Object} companyUpdate Updated company object
    */
   changeCompany = (companyUpdate) => {
@@ -92,7 +92,7 @@ class App extends Component {
   }
 
   /**
-   * Sends a delete request to the backend
+   * Sends a delete request to the backend and removes the selected company from the list
    * @param {String} name Name of the company that is to be deleted
    */
   deleteCompany = (name) => {

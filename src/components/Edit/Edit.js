@@ -56,7 +56,7 @@ class Edit extends Component {
   }
 
   /**
-   * Saves the changes during the edit
+   * Sends a put request to the backend and updates the selected company
    */
   onSave = () => {
     const {id, name, location, industry, ceo, employees} = this.state;

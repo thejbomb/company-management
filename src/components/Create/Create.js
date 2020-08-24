@@ -61,7 +61,7 @@ class Create extends Component {
   }
 
   /**
-   * Creates the new company dataset
+   * Sends a post request to the server to add a new company to the database
    */
   onCreate = () => {
     const {name, location, industry, ceo, employees} = this.state;
