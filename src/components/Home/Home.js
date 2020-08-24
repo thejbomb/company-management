@@ -22,7 +22,7 @@ const Home = ({companies, deleteCompany, onRouteChange, editCompany}) => {
         <td>{employees}</td>
         <td className='options'>
           <Button onClick={() => editCompany(company)}>Edit</Button>
-          <Button onClick={() => deleteCompany(id)}>Delete</Button>
+          <Button onClick={() => deleteCompany(name)}>Delete</Button>
         </td>
       </tr>
     )

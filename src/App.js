@@ -4,17 +4,21 @@ import Navigation from './components/Navigation/Navigation';
 import Home from './components/Home/Home';
 import Create from './components/Create/Create';
 import Edit from './components/Edit/Edit';
+import Search from './components/Search/Search';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 
 const initialState = {
-  route: 'home',
-  companies: [
-    { id: 1, name: 'Amazon', location: 'Bellevue, Washington', industry: 'E-commerce', ceo: 'Jeff Bezos', employees: '800,000'},
-    { id: 2, name: 'Microsoft', location: 'Redmond, Washington', industry: 'Software Development', ceo: 'Bill Gates', employees: '150,000'},
-    { id: 3, name: 'Tesla', location: 'Palo Alto, California', industry: 'Automotive', ceo: 'Elon Musk', employees: '40,000'},
-    { id: 4, name: 'Facebook', location: 'Menlo Park, California', industry: 'Social media', ceo: 'Mark Zuckerberg', employees: '50,000'},
-  ],
+  route: 'signin',
+  email: '',
+  invalid: false,
+  signedIn: false,
+  companies: [],
   company: {},
+  query: {},
 }
+
+const url = 'http://localhost:3001/';
 
 class App extends Component {
   constructor() {
@@ -22,57 +26,150 @@ class App extends Component {
     this.state = initialState;
   }
 
+  /**
+   * Retrieves all the company data
+   */
+  componentDidMount() {
+    fetch(url + 'companyAll', {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then((res) => res.json())
+    .catch(console.log)
+    .then((companies) => {
+      if (companies !== undefined) {
+        this.setState({
+          companies: companies
+        })
+      }
+    })
+  }
+
+  /**
+   * Loads user's email
+   * 
+   * @param {string} email The user's email.
+   */
+  loadUser = (email) => {
+    this.setState({
+      email: email,
+      signedIn: true,
+    })
+  }
+
+  /**
+   * Sends a post request to the server to add a new company to the database
+   * @param {Object} company An object of the new company 
+   */
   addCompany = (company) => {
     this.setState({companies: [...this.state.companies, company]});
   }
 
+  /**
+   * Used to transition to edit company data component
+   * @param {Object} company An object that holds the current company's data
+   */
   editCompany = (company) => {
     this.setState({company: company});
     this.onRouteChange('edit');
   }
 
+  /**
+   * Saves the changes to the company to the backend and what's displayed
+   * @param {Object} companyUpdate Updated company object
+   */
   changeCompany = (companyUpdate) => {
     const {companies} = this.state;
 
-    let updatedList = companies.map((company) => {
-      if (company.id === companyUpdate.id) {
-        return companyUpdate;
-      } else {
-        return company;
-      }
-    })
-    this.setState({companies: updatedList});
+      let updatedList = companies.map((company) => {
+        if (company.id === companyUpdate.id) {
+          return companyUpdate;
+        } else {
+          return company;
+        }
+      })
+      this.setState({companies: updatedList});    
   }
 
-  deleteCompany = (id) => {
-    let newList = this.state.companies.filter(company => company.id !== id);
+  /**
+   * Sends a delete request to the backend
+   * @param {String} name Name of the company that is to be deleted
+   */
+  deleteCompany = (name) => {
+    let newList = this.state.companies.filter(company => company.name !== name);
+
+    fetch(`${url}company/${name}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+            })
+        })
+        .then((res) => res.json());
     this.setState({companies: newList});
   }
 
+  /**
+   * Sends a read request to the backend for the specified company
+   * @param {String} name Name of the company that is being searched
+   */
+  searchCompany = (name) => {
+    fetch(`${url}company/${name}`, {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then((res) => res.json())
+    .catch(console.log)
+    .then((company) => {
+      if (company !== undefined) {
+        this.setState({query: company});
+        this.onRouteChange('search');
+      }
+    })
+    
+  }
+
+  /**
+   * Is used to change the components based on the current route
+   * @param {String} route Current route the user is on/will go to
+   */
   onRouteChange = (route) => {
-    this.setState({route: route});
+    const {signedIn} = this.state;
+    if (signedIn) {
+      this.setState({route: route});
+    } else {
+      this.setState({route: 'signIn'});
+    }
   }
 
   render() {
-    const {companies, route, company} = this.state;
+    const {companies, route, company, query} = this.state;
 
     return (
       <div className="App">
-        <Navigation onRouteChange={this.onRouteChange}/>
+        <Navigation onRouteChange={this.onRouteChange} searchCompany={this.searchCompany}/>
         { (() => {
           switch (route) {
             case 'create': {
-              return (<Create onRouteChange={this.onRouteChange} addCompany={this.addCompany} id={companies.length + 1}/>)
+              return (<Create onRouteChange={this.onRouteChange} addCompany={this.addCompany}/>)
             }
             case 'edit': {
               return (<Edit onRouteChange={this.onRouteChange} company={company} changeCompany={this.changeCompany}/>)
             }
-            default: {
+            case 'search': {
+              return (<Search onRouteChange={this.onRouteChange} company={query}/>)
+            }
+            case 'home': {
               return (<Home companies={companies} deleteCompany={this.deleteCompany} onRouteChange={this.onRouteChange} editCompany={this.editCompany}/>)
+            }
+            case 'register': {
+              return (<Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>)
+            }
+            default: {
+              return (<SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>)
             }
           }
         })()}
-        
       </div>
     );
   }

@@ -23,26 +23,41 @@ class Edit extends Component {
     }
   }
 
-  onNameChange = (event) => {
-    this.setState({name: event.target.value});
-  }
-
+  /**
+   * Saves the input change of the location
+   * @param event The input change event
+   */
   onLocationChange = (event) => {
     this.setState({location: event.target.value});
   }
 
+  /**
+   * Saves the input change of the industry
+   * @param event The input change event
+   */
   onIndustryChange = (event) => {
     this.setState({industry: event.target.value});
   }
 
+  /**
+   * Saves the input change of the ceo
+   * @param event The input change event
+   */
   onCEOChange = (event) => {
     this.setState({ceo: event.target.value});
   }
 
+  /**
+   * Saves the input change of the employees
+   * @param event The input change event
+   */
   onEmployeesChange = (event) => { 
     this.setState({employees: event.target.value});
   }
 
+  /**
+   * Saves the changes during the edit
+   */
   onSave = () => {
     const {id, name, location, industry, ceo, employees} = this.state;
     const {changeCompany, onRouteChange} = this.props;
@@ -50,8 +65,21 @@ class Edit extends Component {
     if (name.length > 0 && location.length > 0 && industry.length > 0 && ceo.length > 0 && employees.length > 0) {
       let company = {id, name, location, industry, ceo, employees};
 
-      changeCompany(company);
-      onRouteChange('home');
+      fetch('http://localhost:3001/update', {
+          method: 'put',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              company: company
+          })
+      })
+      .then((res) => res.json())
+      .catch(console.log)
+      .then(() => {
+        changeCompany(company);
+        onRouteChange('home');
+      }
+    )
+      
     } else {
       this.setState({invalid: true});
     }
@@ -69,7 +97,7 @@ class Edit extends Component {
             <Form.Group as={Row} controlId="formName">
               <Form.Label column sm={2}>Name</Form.Label>
               <Col sm={8}>
-              <Form.Control type="name" placeholder="Name" defaultValue={name} onChange={this.onNameChange}/>
+              <Form.Control type="name" placeholder="Name" defaultValue={name} readOnly/>
               </Col>
             </Form.Group>
 

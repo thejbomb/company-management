@@ -20,34 +20,68 @@ class Create extends Component {
     }
   }
 
+  /**
+   * Saves the input change of the name
+   * @param event The input change event
+   */
   onNameChange = (event) => {
-    this.setState({name: event.target.value});
+    this.setState({name: event.target.value.toLowerCase()});
   }
 
+  /**
+   * Saves the input change of the location
+   * @param event The input change event
+   */
   onLocationChange = (event) => {
-    this.setState({location: event.target.value});
+    this.setState({location: event.target.value.toLowerCase()});
   }
 
+  /**
+   * Saves the input change of the industry
+   * @param event The input change event
+   */
   onIndustryChange = (event) => {
-    this.setState({industry: event.target.value});
+    this.setState({industry: event.target.value.toLowerCase()});
   }
 
+  /**
+   * Saves the input change of the ceo
+   * @param event The input change event
+   */
   onCEOChange = (event) => {
-    this.setState({ceo: event.target.value});
+    this.setState({ceo: event.target.value.toLowerCase()});
   }
 
+  /**
+   * Saves the input change of the employees
+   * @param event The input change event
+   */
   onEmployeesChange = (event) => { 
-    this.setState({employees: event.target.value});
+    this.setState({employees: event.target.value.toLowerCase()});
   }
 
+  /**
+   * Creates the new company dataset
+   */
   onCreate = () => {
     const {name, location, industry, ceo, employees} = this.state;
-    const {addCompany, onRouteChange, id} = this.props;
+    const {addCompany, onRouteChange} = this.props;
 
     if (name.length > 0 && location.length > 0 && industry.length > 0 && ceo.length > 0 && employees.length > 0) {
-      let company = {id, name, location, industry, ceo, employees};
+      let company = {name, location, industry, ceo, employees};
+      fetch('http://localhost:3001/insert', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            company: company
+        })
+    })
+    .then((res) => res.json())
+    .catch(console.log)
+    .then((company) => {
       addCompany(company);
       onRouteChange('home');
+    })
     } else {
       this.setState({invalid: true});
     }
