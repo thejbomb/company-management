@@ -16,3 +16,7 @@ After cloning the repository, call npm install to install all the dependencies f
 ## Built with
 
 This project is built with React.
+
+# Scripts 
+
+Start the app with npm start.
