@@ -69,7 +69,7 @@ class Create extends Component {
 
     if (name.length > 0 && location.length > 0 && industry.length > 0 && ceo.length > 0 && employees.length > 0) {
       let company = {name, location, industry, ceo, employees};
-      fetch('http://localhost:3001/insert', {
+      fetch('http://localhost:3001/company', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

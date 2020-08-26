@@ -65,7 +65,7 @@ class Edit extends Component {
     if (name.length > 0 && location.length > 0 && industry.length > 0 && ceo.length > 0 && employees.length > 0) {
       let company = {id, name, location, industry, ceo, employees};
 
-      fetch('http://localhost:3001/update', {
+      fetch('http://localhost:3001/company', {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
